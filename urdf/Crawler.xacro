@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="crawler">
+
+  <xacro:property name="box" value="1.05 0.35 0.45" />
+  <xacro:property name="wheelrad" value="0.15" />
+  <xacro:property name="wheellen" value="0.13" />
+
+  <link name="base_footprint"/>
+
+  <link name="base_link"> 
+    <visual>
+      <origin xyz="0.0 0.0 0.03" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="${box}"/>
+      </geometry>
+      <material name="purple">
+        <color rgba="0.50 0.0 0.50 1.0"/>
+      </material>
+    </visual>
+    <collision>
+        <origin xyz="0.0 0.0 0.03" rpy="0.0 0.0 0.0"/>
+       <geometry>
+         <box size="${box}"/>
+       </geometry>
+    </collision>
+    <inertial>
+      <mass value="6"/>
+      <inertia ixx="0.16" ixy="0.0" ixz="0.0" iyy="0.61" iyz="0.0" izz="0.65"/>
+    </inertial>
+  </link>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.23"/>
+  </joint> 
+
+  <xacro:macro name="wheel" params="prefix reflect">
+    <link name="${prefix}_wheel">
+      <visual>
+        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <cylinder length="${wheellen}" radius="${wheelrad}"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${wheellen}" radius="${wheelrad}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="1.5"/>
+        <inertia ixx="0.06" ixy="0.0" ixz="0.0" iyy="0.06" iyz="0.0" izz="0.02"/>
+      </inertial>
+    </link>
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${prefix}_wheel"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <origin rpy="-1.57 0.0 0.0" xyz="${reflect} -0.1 "/>
+    </joint>
+
+  </xacro:macro>
+  <xacro:wheel prefix="right_front" reflect="0.16 -0.24" />
+  <xacro:wheel prefix="right_back"  reflect="-0.16 -0.24" />
+  <xacro:wheel prefix="left_front" reflect="0.16 0.24" />
+  <xacro:wheel prefix="left_back"  reflect="-0.16 0.24" />
+
+</robot>
